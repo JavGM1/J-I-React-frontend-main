@@ -176,6 +176,7 @@ export default function AppNavbar({ setCategory, itemCount = 0, cart = [], incre
   async function handleLoginSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoginSuccess(null);
+    setLoginError("");
     if (!validateEmail(loginEmail)) {
       setLoginError("Email inválido");
       return;
@@ -184,12 +185,20 @@ export default function AppNavbar({ setCategory, itemCount = 0, cart = [], incre
       setLoginError("La contraseña debe tener al menos 6 caracteres");
       return;
     }
+    let ok = false;
     try {
-      const ok = await loginUser(loginEmail, loginPassword);
-      if (!ok) {
-        setLoginError("Credenciales incorrectas");
-        return;
-      }
+      ok = await loginUser(loginEmail, loginPassword);
+    } catch (err) {
+      setLoginError("Contraseña errónea");
+      setLoginSuccess(null);
+      return;
+    }
+    if (!ok) {
+      setLoginError("Contraseña errónea");
+      setLoginSuccess(null);
+      return;
+    }
+    try {
       const userInfo = await fetchUserInfo(loginEmail, loginPassword);
       localStorage.setItem("user", JSON.stringify(userInfo));
       setUserName(userInfo.nombre || null);
@@ -203,7 +212,7 @@ export default function AppNavbar({ setCategory, itemCount = 0, cart = [], incre
         setLoginPassword("");
       }, 1500);
     } catch (err) {
-      setLoginError("Error de red o servidor");
+      setLoginError("Contraseña errónea");
       setLoginSuccess(null);
     }
   }
@@ -501,6 +510,9 @@ export default function AppNavbar({ setCategory, itemCount = 0, cart = [], incre
               <Form.Check type="checkbox" label="Recuérdame" />
             </Form.Group>
             <Button variant="primary" type="submit">Enviar</Button>
+            {loginError && (
+              <div className="mt-3 text-danger fw-bold">{loginError}</div>
+            )}
             {loginSuccess && (
               <div className="mt-3 text-success fw-bold">{loginSuccess}</div>
             )}
