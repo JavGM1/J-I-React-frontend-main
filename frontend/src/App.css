@@ -1,0 +1,7 @@
+/* Estilos específicos de la aplicación (limpiados de los valores por defecto de Vite) */
+
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
