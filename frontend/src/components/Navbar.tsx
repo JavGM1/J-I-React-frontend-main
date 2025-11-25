@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import type React from "react";
-import { registerUser, loginUser, fetchUserInfo } from '../api';
+import { registerUser, loginUser, fetchUserInfo, API_BASE } from '../api';
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -41,7 +41,7 @@ export default function AppNavbar({ setCategory, itemCount = 0, cart = [], incre
       if (showAdminPanel) {
         setLoadingUsers(true);
         setErrorUsers(null);
-        fetch("/api/v2/user/get")
+        fetch(`${API_BASE}/user/get`)
           .then(res => {
             if (!res.ok) throw new Error("Error al obtener usuarios");
             return res.json();
@@ -72,7 +72,7 @@ export default function AppNavbar({ setCategory, itemCount = 0, cart = [], incre
           email: userData.email,
           password: userData.password
         };
-        const res = await fetch(`/api/v2/user/del?id=${userId}&id_admin=${userData.id_usuario}`, {
+        const res = await fetch(`${API_BASE}/user/del?id=${userId}&id_admin=${userData.id_usuario}`, {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(adminBody)
@@ -98,7 +98,7 @@ export default function AppNavbar({ setCategory, itemCount = 0, cart = [], incre
     setDeletingAccount(true);
     try {
       const user = userData;
-      const res = await fetch(`/api/v2/user/delself?id=${user.id_usuario}`, {
+      const res = await fetch(`${API_BASE}/user/delself?id=${user.id_usuario}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
